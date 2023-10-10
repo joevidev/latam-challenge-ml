@@ -26,6 +26,14 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Cache pip dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt', 'requirements-test.txt') }}
+        restore-keys: |
+          pip-
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
