@@ -2,24 +2,28 @@ import unittest
 
 from fastapi.testclient import TestClient
 from challenge import app
-
+from datetime import datetime, timedelta
 
 class TestBatchPipeline(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(app)
         
     def test_should_get_predict(self):
+        
         data = {
             "flights": [
                 {
                     "OPERA": "Aerolineas Argentinas", 
                     "TIPOVUELO": "N", 
-                    "MES": 3
+                    "MES": 3,
+                    "Fecha_I": (datetime.now() - timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S"),
+                    "Fecha_O": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 }
             ]
         }
         # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0])) # change this line to the model of chosing
         response = self.client.post("/predict", json=data)
+        print("Response content:", response.content.decode('utf-8'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"predict": [0]})
     
@@ -30,7 +34,10 @@ class TestBatchPipeline(unittest.TestCase):
                 {
                     "OPERA": "Aerolineas Argentinas", 
                     "TIPOVUELO": "N",
-                    "MES": 13
+                    "MES": 13,
+                    "Fecha_I": (datetime.now() - timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S"),
+                    "Fecha_O": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    
                 }
             ]
         }
@@ -44,7 +51,10 @@ class TestBatchPipeline(unittest.TestCase):
                 {
                     "OPERA": "Aerolineas Argentinas", 
                     "TIPOVUELO": "O", 
-                    "MES": 13
+                    "MES": 13,
+                    "Fecha_I": (datetime.now() - timedelta(minutes=10)).strftime("%Y-%m-%d %H:%M:%S"),
+                    "Fecha_O": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    
                 }
             ]
         }
@@ -58,7 +68,10 @@ class TestBatchPipeline(unittest.TestCase):
                 {
                     "OPERA": "Argentinas", 
                     "TIPOVUELO": "O", 
-                    "MES": 13
+                    "MES": 13,
+                    "Fecha_I": (datetime.now() - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S"),
+                    "Fecha_O": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    
                 }
             ]
         }
