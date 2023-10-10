@@ -23,7 +23,7 @@ install:		## Install dependencies
 	pip install -r requirements-test.txt
 	pip install -r requirements.txt
 
-STRESS_URL = http://127.0.0.1:8000 
+STRESS_URL = https://latam-challenge-ml.appspot.com
 .PHONY: stress-test
 stress-test:
 	# change stress url to your deployed app 
@@ -32,6 +32,7 @@ stress-test:
 
 .PHONY: model-test
 model-test:			## Run tests and coverage
+	python -c "import os; from challenge.model import MODEL_FILENAME; os.remove(MODEL_FILENAME) if os.path.exists(MODEL_FILENAME) else None"
 	mkdir reports || true
 	pytest --cov-config=.coveragerc --cov-report term --cov-report html:reports/html --cov-report xml:reports/coverage.xml --junitxml=reports/junit.xml --cov=challenge tests/model
 
